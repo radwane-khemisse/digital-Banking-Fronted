@@ -1,10 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CustomerService} from '../services/customer.service';
+import {Observable, catchError, of, startWith, throwError} from 'rxjs';
+import {Customer} from '../models/customer.model';
+import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-customers',
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './customers.component.html',
   standalone: true,
   styleUrl: './customers.component.css'
@@ -13,18 +16,32 @@ export class CustomersComponent implements OnInit {
 
   customers: any;
   errorMessage! : string;
-  constructor(private customerService : CustomerService) {
-  }
+  listCustomers$!: Observable<Array<Customer> | null>;
+  searchFormGroup: FormGroup | undefined;
+
+  constructor(private customerService : CustomerService, private fb : FormBuilder) {}
 
   ngOnInit(): void {
-    this.customerService.getCustomers().subscribe({
-      next: (data) => {
-        this.customers = data;
-      },
-      error: (error) => {
-        this.errorMessage=error.message;
-      }
-    });
+    this.searchFormGroup = this.fb.group({
+      keyword: this.fb.control("")
+    })
+
+    this.listCustomers$ = this.customerService.getCustomers().pipe(
+      startWith(null),
+      catchError(err => {
+        this.errorMessage = err.message;
+        return of(null);
+      })
+    );
+  }
+  handleSearchCustomers(){
+    let keyword = this.searchFormGroup?.value.keyword;
+    this.listCustomers$ = this.customerService.searchCustomers(keyword).pipe(
+      catchError(err => {
+        this.errorMessage = err.message;
+        return throwError(err);
+      })
+    );
 
   }
 
