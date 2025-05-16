@@ -1,0 +1,25 @@
+<div class="container mt-2">
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{errorMessage}}
+  </div>
+  <div class="card" *ngIf="customers">
+    <div class="card-header">Customers</div>
+    <div class="card-body" >
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let customer of customers">
+          <td>{{customer.id}}</td>
+          <td>{{customer.name}}</td>
+          <td>{{customer.email}}</td>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
