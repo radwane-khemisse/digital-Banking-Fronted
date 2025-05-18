@@ -6,6 +6,8 @@ import {CustomerAccountsComponent} from './customer-accounts/customer-accounts.c
 import {LoginComponent} from './login/login.component';
 import {AdminTemplateComponent} from './admin-template/admin-template.component';
 import {authenticationGuard} from './guards/authentication.guard';
+import {authorizationGuard} from './guards/authorization.guard';
+import {NotAuthorizedComponent} from './not-authorized/not-authorized.component';
 
 export const routes: Routes = [
   {path : "login", component: LoginComponent},
@@ -14,8 +16,9 @@ export const routes: Routes = [
     children: [
       {path: "customers", component: CustomersComponent},
       {path: "accounts", component: AccountsComponent},
-      {path: "new-customer", component: NewCustomerComponent},
-      {path: "customer-accounts/:id", component: CustomerAccountsComponent}
+      {path: "new-customer", component: NewCustomerComponent, canActivate:[authorizationGuard],data:{roles: ["ADMIN"]}},
+      {path: "customer-accounts/:id", component: CustomerAccountsComponent},
+      {path: "notAuthorized", component: NotAuthorizedComponent}
     ]},
 
 ];

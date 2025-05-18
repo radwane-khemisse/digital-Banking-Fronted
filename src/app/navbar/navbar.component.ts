@@ -1,10 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
+import {AuthService} from '../services/auth.service';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   imports: [
-    RouterLink
+    RouterLink,
+    NgIf
   ],
   standalone: true,
   templateUrl: './navbar.component.html',
@@ -12,12 +15,16 @@ import {RouterLink} from '@angular/router';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor() {
+  constructor(public authService:AuthService,private router:Router) {
   }
 
   ngOnInit(): void {
   }
 
 
+  handleLogout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
 
+  }
 }
